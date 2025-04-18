@@ -71,6 +71,16 @@ function ApplyForJobs() {
   const [jobs, setJobs] = useState([]);
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [selectedJob, setSelectedJob] = useState(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     setIsLoading(true);
@@ -176,26 +186,26 @@ function ApplyForJobs() {
 
   if (selectedJob) {
     return (
-      <div className="min-h-screen bg-gray-100 ">
-        <div className=" mx-auto">
+      <div className="min-h-screen bg-gray-100 p-4 md:p-6">
+        <div className="max-w-6xl mx-auto">
           <button 
             onClick={handleBackToList}
-            className="flex items-center gap-1 text-blue-600 mb-2 hover:text-blue-800"
+            className="flex items-center gap-1 text-blue-600 mb-4 hover:text-blue-800"
           >
             <ChevronLeft size={20} />
             <span>Back to jobs</span>
           </button>
 
           {/* Job details card */}
-          <div className="bg-white rounded-lg p-6 shadow-sm">
-            <div className="flex justify-between items-start mb-6">
-              <div>
+          <div className="bg-white rounded-lg p-4 md:p-6 shadow-sm">
+            <div className="flex flex-col md:flex-row justify-between items-start mb-6 gap-4">
+              <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-gray-600">{selectedJob.company}</span>
                 </div>
-                <div className="flex items-center gap-4">
-                  <h1 className="text-3xl font-bold">{selectedJob.title}</h1>
-                  <span className="bg-yellow-100 text-yellow-800 text-sm px-3 py-1 rounded-full">• Applied</span>
+                <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">
+                  <h1 className="text-2xl md:text-3xl font-bold">{selectedJob.title}</h1>
+                  <span className="bg-yellow-100 text-yellow-800 text-sm px-3 py-1 rounded-full self-start md:self-auto">• Applied</span>
                 </div>
               </div>
               <button 
@@ -206,7 +216,7 @@ function ApplyForJobs() {
               </button>
             </div>
 
-            <div className="grid grid-cols-4 gap-4 p-4 bg-gray-50 rounded-lg mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-lg mb-6">
               <div className="flex items-center gap-2">
                 <Briefcase className="text-blue-500" size={20} />
                 <div>
@@ -247,12 +257,12 @@ function ApplyForJobs() {
                   <button className="text-gray-400">
                     <ChevronLeft size={20} />
                   </button>
-                  <div className="flex-1 px-8">
-                    <div className="flex justify-between text-sm text-gray-600">
+                  <div className="flex-1 px-4 md:px-8">
+                    <div className="flex flex-col sm:flex-row justify-between text-sm text-gray-600 gap-2">
                       <span>Applied</span>
                       <span>Expected Date for the Next Update</span>
                     </div>
-                    <div className="flex justify-between mt-2">
+                    <div className="flex flex-col sm:flex-row justify-between mt-2 gap-2">
                       <span>1 minute ago</span>
                       <span>24 Apr, 2025</span>
                     </div>
@@ -264,8 +274,8 @@ function ApplyForJobs() {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-8 mb-8">
-              <div className="col-span-2">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+              <div className="lg:col-span-2">
                 <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
                   <Code size={20} />
                   Job Description
@@ -300,7 +310,7 @@ function ApplyForJobs() {
             <div className="flex justify-end">
               <button 
                 onClick={handleApplyNow}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md transition-colors text-lg"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md transition-colors text-lg w-full md:w-auto"
               >
                 Apply Now
               </button>
@@ -313,7 +323,7 @@ function ApplyForJobs() {
 
   return (
     <div className="flex-1 bg-gray-50">
-      <div className="bg-white p-4 shadow-sm border border-gray-200 ">
+      <div className="bg-white p-4 shadow-sm border border-gray-200">
         <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-3 text-gray-400" size={20} />
@@ -354,64 +364,67 @@ function ApplyForJobs() {
       </div>
 
       <div className="flex flex-col md:flex-row">
-        <div className="w-full md:w-64 bg-white p-4 border-r">
-          <div className="space-y-6">
-            <div>
-              <div className="flex justify-between items-center mb-2">
-                <h3 className="font-medium text-gray-700">Experience</h3>
-                <ChevronDown size={16} className="text-gray-500" />
-              </div>
-              <div className="space-y-2">
-                <input 
-                  type="text"
-                  value={searchExperience}
-                  onChange={(e) => {
-                    setSearchExperience(e.target.value);
-                    if (e.target.value) addFilter(e.target.value);
-                  }}
-                  className="w-full px-3 py-1 border rounded-md text-sm"
-                  placeholder="Filter by experience"
-                />
-              </div>
-            </div>
-
-            <div>
-              <div className="flex justify-between items-center mb-2">
-                <h3 className="font-medium text-gray-700">Date posted</h3>
-                <ChevronDown size={16} className="text-gray-500" />
-              </div>
-              <div className="space-y-2">
-                {['All', 'Last 24 hours', 'Last 3 days', 'Last 7 days'].map((option) => (
-                  <label key={option} className="flex items-center gap-2 cursor-pointer">
-                    <input 
-                      type="radio" 
-                      name="date" 
-                      checked={datePosted === option}
-                      onChange={() => setDatePosted(option)}
-                      className="accent-blue-600" 
-                    />
-                    <span className="text-sm text-gray-700">{option}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            <div className="border-t pt-4">
-              <div className="flex justify-between items-center mb-2">
-                <h3 className="font-medium text-gray-700">Urgently hiring</h3>
-                <label className="relative inline-flex items-center cursor-pointer">
+        {/* Filters sidebar - hidden on mobile by default, can be toggled */}
+        {!isMobile && (
+          <div className="w-full md:w-64 bg-white p-4 border-r">
+            <div className="space-y-6">
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <h3 className="font-medium text-gray-700">Experience</h3>
+                  <ChevronDown size={16} className="text-gray-500" />
+                </div>
+                <div className="space-y-2">
                   <input 
-                    type="checkbox" 
-                    className="sr-only peer" 
-                    checked={urgentOnly}
-                    onChange={() => setUrgentOnly(!urgentOnly)}
+                    type="text"
+                    value={searchExperience}
+                    onChange={(e) => {
+                      setSearchExperience(e.target.value);
+                      if (e.target.value) addFilter(e.target.value);
+                    }}
+                    className="w-full px-3 py-1 border rounded-md text-sm"
+                    placeholder="Filter by experience"
                   />
-                  <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
-                </label>
+                </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <h3 className="font-medium text-gray-700">Date posted</h3>
+                  <ChevronDown size={16} className="text-gray-500" />
+                </div>
+                <div className="space-y-2">
+                  {['All', 'Last 24 hours', 'Last 3 days', 'Last 7 days'].map((option) => (
+                    <label key={option} className="flex items-center gap-2 cursor-pointer">
+                      <input 
+                        type="radio" 
+                        name="date" 
+                        checked={datePosted === option}
+                        onChange={() => setDatePosted(option)}
+                        className="accent-blue-600" 
+                      />
+                      <span className="text-sm text-gray-700">{option}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div className="border-t pt-4">
+                <div className="flex justify-between items-center mb-2">
+                  <h3 className="font-medium text-gray-700">Urgently hiring</h3>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      className="sr-only peer" 
+                      checked={urgentOnly}
+                      onChange={() => setUrgentOnly(!urgentOnly)}
+                    />
+                    <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+                  </label>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
 
         <main className="flex-1 p-4 md:p-6">
           <div className="mb-6">
@@ -512,10 +525,10 @@ function ApplyForJobs() {
               {filteredJobs.map(job => (
                 <div 
                   key={job.id} 
-                  className="bg-white rounded-lg p-5 shadow-sm border border-gray-200 hover:shadow-md transition-shadow cursor-pointer"
+                  className="bg-white rounded-lg p-4 md:p-5 shadow-sm border border-gray-200 hover:shadow-md transition-shadow cursor-pointer"
                   onClick={() => handleJobClick(job)}
                 >
-                  <div className="flex justify-between items-start">
+                  <div className="flex flex-col md:flex-row justify-between items-start gap-4">
                     <div className="flex-1">
                       <div className="flex flex-wrap items-center gap-2 mb-2">
                         {job.isUrgent && (
@@ -528,9 +541,9 @@ function ApplyForJobs() {
                           {getDaysAgo(job.postedDate)}
                         </span>
                       </div>
-                      <h3 className="text-xl font-semibold mb-1 text-gray-800">{job.title}</h3>
+                      <h3 className="text-lg md:text-xl font-semibold mb-1 text-gray-800">{job.title}</h3>
                       <p className="text-gray-600 mb-3">{job.company}</p>
-                      <div className="flex flex-wrap items-center gap-4 text-gray-600 mb-3">
+                      <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-2 md:gap-4 text-gray-600 mb-3">
                         <div className="flex items-center gap-1">
                           <MapPin size={16} className="text-gray-500" />
                           <span>{job.location}</span>
@@ -544,10 +557,9 @@ function ApplyForJobs() {
                         <span className="bg-gray-100 text-gray-700 text-xs px-3 py-1 rounded-full">{job.workMode}</span>
                         <span className="bg-gray-100 text-gray-700 text-xs px-3 py-1 rounded-full">{job.type}</span>
                         <span className="bg-gray-100 text-gray-700 text-xs px-3 py-1 rounded-full">{job.experience}</span>
-                        <span className="bg-gray-100 text-gray-700 text-xs px-3 py-1 rounded-full">{job.skills}</span>
                       </div>
                     </div>
-                    <div className="flex flex-col items-end gap-2">
+                    <div className="flex flex-row md:flex-col items-center md:items-end gap-2 self-end md:self-auto">
                       {job.isNew && (
                         <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">New</span>
                       )}
